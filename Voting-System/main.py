@@ -1,47 +1,46 @@
 from flask import Flask, render_template, request
-import pymongo
-import os
+from flask_pymongo import PyMongo
 
 
 app = Flask(__name__)
+# app.config['MONGO_URI'] = "mongodb://" +os.environ["DB_PORT_27017_TCP_ADDR"] + ":27017/Users"
+mongo = PyMongo(app, "mongodb://localhost:27017/flask_vote")
 
-# Poll Question and Answers
+# Poll Question and Answers #
 poll_data_1 = {
     "question": "Which Langugage do you use for Programming?",
     "fields": ["C/C++", "Python", "Java", "JavaScript", "PHP"]
 }
 
-# Rendering First (Landing Page)
+# Rendering First (Landing Page) #
 
 
 @app.route('/')
 def root():
     return render_template('index.html', data=poll_data_1)
 
-# Accepting Votes
+# Accepting Votes #
 
 
 @app.route('/poll')
 def poll():
     vote = request.args.get('field')
-    output = open("vote", "a")
-    output.write(vote+'\n')
-    output.close()
+    output = mongo.db.vote_data.insert_one({'vote': vote})
     return render_template('thankyou.html', data=poll_data_1)
 
-# Display Results
+# Display Results #
+
+
 @app.route('/result')
 def result():
     votes = {}
-    for f in poll_data_1['fields']:
-        votes[f] = 0
-    
-    f = open("vote","r")
-    for line in f:
-        vote = line.rstrip('\n')
-        votes[vote] += 1
+    get_votes = mongo.db.vote_data.aggregate([
+        {'$group': {'_id': '$vote', 'count': {'$sum': 1}}}
+    ])
+    for count in get_votes:
+        values = {count['_id']: count['count']}
+        votes.update(values)
     return render_template('results.html', data=poll_data_1, votes=votes)
-
 
 
 if __name__ == '__main__':
