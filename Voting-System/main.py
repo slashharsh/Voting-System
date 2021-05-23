@@ -1,10 +1,11 @@
 from flask import Flask, render_template, request
 from flask_pymongo import PyMongo
+import os
 
 
 app = Flask(__name__)
-# app.config['MONGO_URI'] = "mongodb://" +os.environ["DB_PORT_27017_TCP_ADDR"] + ":27017/Users"
-mongo = PyMongo(app, "mongodb://localhost:27017/flask_vote")
+app.config['MONGO_URI'] = "mongodb://" + os.environ["DB_PORT_27017_TCP_ADDR"] + ":27017/flask_vote"
+# mongo = PyMongo(app, "mongodb://localhost:27017/flask_vote")
 
 # Poll Question and Answers #
 poll_data_1 = {
