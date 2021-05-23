@@ -1,11 +1,11 @@
 web:
     build: .
-    command: python main.py
+    command: python -u main.py
     ports: 
-        - "5432:5432"
+        - "54323:54323"
     volumes: 
         - .:/voting
     links:
         - db
 db:
-    image: mongo:3.0.2
+    image: mongo:latest
