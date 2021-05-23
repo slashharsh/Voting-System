@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voting | Home</title>
+</head>
+
+<body style="background-color: aquamarine;">
+    <h1>
+        {{ data.question }}
+    </h1>
+    <br><br>
+    <div class="container">
+        <form action="/poll">
+            <h3>
+                <label class="radio">
+                    {% for e in data.fields %}<br>
+                    <input type="radio" name="field" value="{{e}}">{{ e }}<br>
+                    {% endfor %}<br>
+                    <input type="submit" value="Vote" id="button">
+                </label>
+            </h3>
+        </form>
+    </div>
+</body>
+
+</html>
